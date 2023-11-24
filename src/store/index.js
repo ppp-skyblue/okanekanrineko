@@ -25,12 +25,12 @@ const state = {
 
   /** 設定 */
   settings: {
-    appName: 'GAS 家計簿',
+    appName: '💰okanekanrineko🐈',
     apiUrl: '',
     authToken: '',
     strIncomeItems: '給料, ボーナス, 繰越',
-    strOutgoItems: '食費, 趣味, 交通費, 買い物, 交際費, 生活費, 住宅, 通信, 車, 税金',
-    strTagItems: '固定費, カード'
+    strOutgoItems: '食費, 移動費, 入場料, 宿泊費, 雑費',
+    strTagItems: 'なおくん, ゆりねこ, ゆりねこ→なおくん, なおくん→ゆりねこ'
   }
 }
 
@@ -40,12 +40,12 @@ const state = {
  */
 const mutations = {
   /** 指定年月の家計簿データをセットします */
-  setAbData (state, { yearMonth, list }) {
+  setAbData(state, { yearMonth, list }) {
     state.abData[yearMonth] = list
   },
 
   /** データを追加します */
-  addAbData (state, { item }) {
+  addAbData(state, { item }) {
     const yearMonth = item.date.slice(0, 7)
     const list = state.abData[yearMonth]
     if (list) {
@@ -54,7 +54,7 @@ const mutations = {
   },
 
   /** 指定年月のデータを更新します */
-  updateAbData (state, { yearMonth, item }) {
+  updateAbData(state, { yearMonth, item }) {
     const list = state.abData[yearMonth]
     if (list) {
       const index = list.findIndex(v => v.id === item.id)
@@ -63,7 +63,7 @@ const mutations = {
   },
 
   /** 指定年月&IDのデータを削除します */
-  deleteAbData (state, { yearMonth, id }) {
+  deleteAbData(state, { yearMonth, id }) {
     const list = state.abData[yearMonth]
     if (list) {
       const index = list.findIndex(v => v.id === id)
@@ -72,17 +72,17 @@ const mutations = {
   },
 
   /** ローディング状態をセットします */
-  setLoading (state, { type, v }) {
+  setLoading(state, { type, v }) {
     state.loading[type] = v
   },
 
   /** エラーメッセージをセットします */
-  setErrorMessage (state, { message }) {
+  setErrorMessage(state, { message }) {
     state.errorMessage = message
   },
 
   /** 設定を保存します */
-  saveSettings (state, { settings }) {
+  saveSettings(state, { settings }) {
     state.settings = { ...settings }
     const { appName, apiUrl, authToken } = state.settings
     document.title = appName
@@ -94,7 +94,7 @@ const mutations = {
   },
 
   /** 設定を読み込みます */
-  loadSettings (state) {
+  loadSettings(state) {
     const settings = JSON.parse(localStorage.getItem('settings'))
     if (settings) {
       state.settings = Object.assign(state.settings, settings)
@@ -112,7 +112,7 @@ const mutations = {
  */
 const actions = {
   /** 指定年月の家計簿データを取得します */
-  async fetchAbData ({ commit }, { yearMonth }) {
+  async fetchAbData({ commit }, { yearMonth }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
     try {
@@ -127,7 +127,7 @@ const actions = {
   },
 
   /** データを追加します */
-  async addAbData ({ commit }, { item }) {
+  async addAbData({ commit }, { item }) {
     const type = 'add'
     commit('setLoading', { type, v: true })
     try {
@@ -141,7 +141,7 @@ const actions = {
   },
 
   /** データを更新します */
-  async updateAbData ({ commit }, { beforeYM, item }) {
+  async updateAbData({ commit }, { beforeYM, item }) {
     const type = 'update'
     const yearMonth = item.date.slice(0, 7)
     commit('setLoading', { type, v: true })
@@ -162,7 +162,7 @@ const actions = {
   },
 
   /** データを削除します */
-  async deleteAbData ({ commit }, { item }) {
+  async deleteAbData({ commit }, { item }) {
     const type = 'delete'
     const yearMonth = item.date.slice(0, 7)
     const id = item.id
@@ -178,12 +178,12 @@ const actions = {
   },
 
   /** 設定を保存します */
-  saveSettings ({ commit }, { settings }) {
+  saveSettings({ commit }, { settings }) {
     commit('saveSettings', { settings })
   },
 
   /** 設定を読み込みます */
-  loadSettings ({ commit }) {
+  loadSettings({ commit }) {
     commit('loadSettings')
   }
 }
@@ -197,15 +197,15 @@ const createItems = v => v.split(',').map(v => v.trim()).filter(v => v.length !=
  */
 const getters = {
   /** 収入カテゴリ（配列） */
-  incomeItems (state) {
+  incomeItems(state) {
     return createItems(state.settings.strIncomeItems)
   },
   /** 支出カテゴリ（配列） */
-  outgoItems (state) {
+  outgoItems(state) {
     return createItems(state.settings.strOutgoItems)
   },
   /** タグ（配列） */
-  tagItems (state) {
+  tagItems(state) {
     return createItems(state.settings.strTagItems)
   }
 }
